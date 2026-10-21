@@ -1,0 +1,166 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#f2f2f7" />
+    <meta name="apple-mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="default" />
+    <meta name="apple-mobile-web-app-title" content="Dayframe" />
+    <meta
+      name="description"
+      content="A private, local-first daily photo journal for capturing one meaningful frame each day."
+    />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <link rel="icon" href="/icon.svg" type="image/svg+xml" />
+    <title>Dayframe</title>
+
+    <style>
+      :root {
+        color-scheme: light;
+        font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Segoe UI", sans-serif;
+        background: #f2f2f7;
+      }
+
+      * {
+        box-sizing: border-box;
+      }
+
+      html,
+      body,
+      #root {
+        width: 100%;
+        min-height: 100%;
+        margin: 0;
+      }
+
+      body {
+        background: #f2f2f7;
+        color: #111113;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+      }
+
+      .app-loading {
+        min-height: 100vh;
+        display: grid;
+        place-items: center;
+        padding: 24px;
+      }
+
+      .app-loading-inner {
+        width: min(100%, 320px);
+        text-align: center;
+      }
+
+      .app-loading-mark {
+        width: 44px;
+        height: 44px;
+        margin: 0 auto 18px;
+        border: 3px solid #d1d1d6;
+        border-top-color: #007aff;
+        border-radius: 50%;
+        animation: dayframe-spin 0.8s linear infinite;
+      }
+
+      .app-loading strong {
+        display: block;
+        font-size: 20px;
+        font-weight: 700;
+        letter-spacing: -0.02em;
+      }
+
+      .app-loading span {
+        display: block;
+        margin-top: 7px;
+        color: #6e6e73;
+        font-size: 13px;
+        line-height: 1.4;
+      }
+
+      .app-loading button {
+        min-height: 42px;
+        margin-top: 18px;
+        padding: 0 18px;
+        color: #fff;
+        background: #007aff;
+        border: 0;
+        border-radius: 12px;
+        font: inherit;
+        font-weight: 600;
+        cursor: pointer;
+      }
+
+      .app-loading button:focus-visible {
+        outline: 3px solid rgba(0, 122, 255, 0.28);
+        outline-offset: 2px;
+      }
+
+      @keyframes dayframe-spin {
+        to {
+          transform: rotate(360deg);
+        }
+      }
+
+      @media (prefers-reduced-motion: reduce) {
+        .app-loading-mark {
+          animation-duration: 0.01ms;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div id="root">
+      <main class="app-loading" aria-live="polite" aria-label="Loading Dayframe">
+        <div class="app-loading-inner">
+          <div class="app-loading-mark" aria-hidden="true"></div>
+          <strong>Dayframe</strong>
+          <span id="loading-message">Opening your journal…</span>
+          <button id="loading-retry" type="button" hidden>Try again</button>
+        </div>
+      </main>
+    </div>
+
+    <noscript>
+      <main class="app-loading">
+        <div class="app-loading-inner">
+          <strong>Dayframe</strong>
+          <span>JavaScript is required to open your photo journal.</span>
+        </div>
+      </main>
+    </noscript>
+
+    <script>
+      (function () {
+        'use strict';
+
+        var message = document.getElementById('loading-message');
+        var retry = document.getElementById('loading-retry');
+        var root = document.getElementById('root');
+
+        function showError() {
+          if (!message || !root || root.children.length !== 1) {
+            return;
+          }
+
+          message.textContent = 'Dayframe could not open. Please reload the page.';
+          if (retry) {
+            retry.hidden = false;
+          }
+        }
+
+        if (retry) {
+          retry.addEventListener('click', function () {
+            window.location.reload();
+          });
+        }
+
+        window.addEventListener('error', showError);
+        window.addEventListener('unhandledrejection', showError);
+      })();
+    </script>
+
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>
